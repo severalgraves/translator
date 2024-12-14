@@ -193,7 +193,7 @@ public:
 				break;
 			}
 		}
-		return stack.isEmpty();
+		return true;
 	}
 
 	double Calculation() {

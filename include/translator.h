@@ -16,56 +16,6 @@ private:
 	vector<Term*> polish;
 	vector<Term*> str_terms;
 
-public:
-
-	Translator(string s) : str(s) {}
-
-	~Translator()
-	{
-		for (size_t i = 0; i < str_terms.size(); i++)
-		{
-			delete str_terms[i];
-		}
-	}
-	double solve()
-	{
-		if (!LexicalAnalysis())
-		{
-			throw "lexical analysis error";
-		}
-
-		if (!SyntacticAnalysis())
-		{
-			throw "syntactic analysis error";
-		}
-
-
-		for (size_t i = 0; i < str.size(); i++)
-		{
-			cout << str[i];
-		}
-
-		cout << "\n";
-
-		for (size_t i = 0; i < str_terms.size(); i++)
-		{
-			str_terms[i]->print();
-		}
-		cout << "\n";
-
-		for (size_t i = 0; i < polish.size(); i++)
-		{
-			polish[i]->print();
-		}
-		cout << "\n";
-
-		double d = Calculation();
-
-		cout << d << "\n";
-
-		return d;
-	}
-
 	bool LexicalAnalysis()
 	{
 		size_t i = 0;
@@ -203,55 +153,105 @@ public:
 		{
 			switch (polish[i]->GetType())
 			{
-				case type::number:
+			case type::number:
+			{
+				stack_num.push(((Number*)(polish[i]))->value);
+				break;
+			}
+
+			case type::operation:
+			{
+				double operand_1 = stack_num.top();
+				stack_num.pop();
+
+				double operand_2 = stack_num.top();
+				stack_num.pop();
+
+				switch (((Operator*)(polish[i]))->op)
 				{
-					stack_num.push(((Number*)(polish[i]))->value);
+
+				case '+':
+				{
+					stack_num.push(operand_2 + operand_1);
 					break;
 				}
-
-				case type::operation:
+				case '-':
 				{
-					double operand_1 = stack_num.top();
-					stack_num.pop();
+					stack_num.push(operand_2 - operand_1);
+					break;
+				}
+				case '*':
+				{
+					stack_num.push(operand_2 * operand_1);
+					break;
+				}
+				case '/':
+				{
+					if (operand_1 == 0.0)
+					{
+						throw "division by zero";
+					}
+					stack_num.push(operand_2 / operand_1);
 
-					double operand_2 = stack_num.top();
-					stack_num.pop();
-
-					switch (((Operator*)(polish[i]))->op)
-						{
-
-							case '+':
-							{
-								stack_num.push(operand_2 + operand_1);
-								break;
-							}
-							case '-':
-							{
-								stack_num.push(operand_2 - operand_1);
-								break;
-							}
-							case '*':
-							{
-								stack_num.push(operand_2 * operand_1);
-								break;
-							}
-							case '/':
-							{
-								if (operand_1 == 0.0)
-								{
-									throw "division by zero";
-								}
-								stack_num.push(operand_2 / operand_1);
-
-								break;
-							}
+					break;
+				}
 				}
 				break;
-				}
+			}
 			}
 		}
 		return stack_num.top();
 	}
+public:
+
+	Translator(string s) : str(s) {}
+
+	~Translator()
+	{
+		for (size_t i = 0; i < str_terms.size(); i++)
+		{
+			delete str_terms[i];
+		}
+	}
+	double solve()
+	{
+		if (!LexicalAnalysis())
+		{
+			throw "lexical analysis error";
+		}
+
+		if (!SyntacticAnalysis())
+		{
+			throw "syntactic analysis error";
+		}
+
+
+		for (size_t i = 0; i < str.size(); i++)
+		{
+			cout << str[i];
+		}
+
+		cout << "\n";
+
+		for (size_t i = 0; i < str_terms.size(); i++)
+		{
+			str_terms[i]->print();
+		}
+		cout << "\n";
+
+		for (size_t i = 0; i < polish.size(); i++)
+		{
+			polish[i]->print();
+		}
+		cout << "\n";
+
+		double d = Calculation();
+
+		cout << d << "\n";
+
+		return d;
+	}
+
 
 };
 

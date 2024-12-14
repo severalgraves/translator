@@ -40,6 +40,7 @@ public:
 			throw "syntactic analysis error";
 		}
 
+		ToPostfix();
 
 		for (size_t i = 0; i < str.size(); i++)
 		{
@@ -193,7 +194,7 @@ public:
 				break;
 			}
 		}
-		return true;
+		return stack.isEmpty();
 	}
 
 	double Calculation() {

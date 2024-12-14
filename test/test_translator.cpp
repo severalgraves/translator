@@ -68,7 +68,7 @@ TEST(tTranslator, can_add)
 
 	double s = 3 + 4.5;
 
-	EXPECT_EQ(s, expr.solve());
+	EXPECT_EQ(s, expr.Calculation());
 }
 
 TEST(tTranslator, can_subtract)
@@ -79,7 +79,7 @@ TEST(tTranslator, can_subtract)
 	double a = 3 - 4.5;
 
 
-	EXPECT_EQ(a, expr.solve());
+	EXPECT_EQ(a, expr.Calculation());
 }
 
 TEST(tTranslator, can_multiply)
@@ -90,7 +90,7 @@ TEST(tTranslator, can_multiply)
 	double a = 3 * 4.5;
 
 
-	EXPECT_EQ(a, expr.solve());
+	EXPECT_EQ(a, expr.Calculation());
 }
 
 TEST(tTranslator, can_divide)
@@ -101,7 +101,7 @@ TEST(tTranslator, can_divide)
 	double a = 3.8;
 
 
-	EXPECT_NE(a, expr.solve());
+	EXPECT_NE(a, expr.Calculation());
 }
 
 TEST(tTranslator, invalid_brackets)
@@ -123,7 +123,7 @@ TEST(tTranslator, combination_of_operations_without_errors)
 {
 	Translator expr("(5.2-3)*(8+2.5)/(4+1)");
 
-	ASSERT_NO_THROW(expr.solve());
+	ASSERT_NO_THROW(expr.Calculation());
 }
 
 TEST(tTranslator, combination_of_operations_and_priority_with_correct_answer)
@@ -132,7 +132,7 @@ TEST(tTranslator, combination_of_operations_and_priority_with_correct_answer)
 
 	double d = (5.2 - 3) * (8 + 2.5) / (4 + 1);
 
-	EXPECT_EQ(d, expr.solve());
+	EXPECT_EQ(d, expr.Calculation());
 }
 
 TEST(tTranslator, two_operators_in_a_row)

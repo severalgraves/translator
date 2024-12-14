@@ -16,6 +16,57 @@ private:
 	vector<Term*> polish;
 	vector<Term*> str_terms;
 
+	
+public:
+
+	Translator(string s) : str(s) {}
+
+	~Translator()
+	{
+		for (size_t i = 0; i < str_terms.size(); i++)
+		{
+			delete str_terms[i];
+		}
+	}
+	double solve()
+	{
+		if (!LexicalAnalysis())
+		{
+			throw "lexical analysis error";
+		}
+
+		if (!SyntacticAnalysis())
+		{
+			throw "syntactic analysis error";
+		}
+
+
+		for (size_t i = 0; i < str.size(); i++)
+		{
+			cout << str[i];
+		}
+
+		cout << "\n";
+
+		for (size_t i = 0; i < str_terms.size(); i++)
+		{
+			str_terms[i]->print();
+		}
+		cout << "\n";
+
+		for (size_t i = 0; i < polish.size(); i++)
+		{
+			polish[i]->print();
+		}
+		cout << "\n";
+
+		double d = Calculation();
+
+		cout << d << "\n";
+
+		return d;
+	}
+
 	bool LexicalAnalysis()
 	{
 		size_t i = 0;
@@ -202,56 +253,6 @@ private:
 		}
 		return stack_num.top();
 	}
-public:
-
-	Translator(string s) : str(s) {}
-
-	~Translator()
-	{
-		for (size_t i = 0; i < str_terms.size(); i++)
-		{
-			delete str_terms[i];
-		}
-	}
-	double solve()
-	{
-		if (!LexicalAnalysis())
-		{
-			throw "lexical analysis error";
-		}
-
-		if (!SyntacticAnalysis())
-		{
-			throw "syntactic analysis error";
-		}
-
-
-		for (size_t i = 0; i < str.size(); i++)
-		{
-			cout << str[i];
-		}
-
-		cout << "\n";
-
-		for (size_t i = 0; i < str_terms.size(); i++)
-		{
-			str_terms[i]->print();
-		}
-		cout << "\n";
-
-		for (size_t i = 0; i < polish.size(); i++)
-		{
-			polish[i]->print();
-		}
-		cout << "\n";
-
-		double d = Calculation();
-
-		cout << d << "\n";
-
-		return d;
-	}
-
 
 };
 

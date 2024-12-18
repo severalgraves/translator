@@ -157,14 +157,15 @@ public:
 			return ')';
 		}
 	}
+
 	bool SyntacticAnalysis()
 	{
 		Stack<char> stack;
-
+		bool lastWasOperator = false; 
+		bool lastWasOperand = false; 
 
 		for (size_t i = 0; i < str_terms.size(); i++)
 		{
-
 			Term* currentTerm = str_terms[i];
 
 			switch (currentTerm->GetType())
@@ -172,28 +173,60 @@ public:
 			case type::open_bracket:
 			{
 				stack.push(((Bracket*)currentTerm)->get_op());
+				lastWasOperator = true; 
+				lastWasOperand = false; 
 				break;
 			}
 
 			case type::close_bracket:
 			{
-
 				if (!stack.isEmpty() && ((Bracket*)currentTerm)->get_op() == Conformity(stack.top()))
 				{
 					stack.pop();
+					lastWasOperator = false; 
+					lastWasOperand = true;
 				}
 				else
 				{
+					return false; 
+				}
+				break;
+			}
+
+			case type::operation:
+			{
+				if (lastWasOperator)
+				{
 					return false;
 				}
+
+				lastWasOperator = true;
+				lastWasOperand = false;
+				break;
+			}
+
+			case type::number:
+			{
+				if (lastWasOperand)
+				{
+					return false;
+				}
+
+				lastWasOperand = true;
+				lastWasOperator = false;
 				break;
 			}
 
 			default:
-
 				break;
 			}
 		}
+
+		if (lastWasOperator)
+		{
+			return false;
+		}
+
 		return stack.isEmpty();
 	}
 
@@ -243,7 +276,7 @@ public:
 					{
 						throw "division by zero";
 					}
-					stack_num.push(operand_2 / operand_1);
+					else stack_num.push(operand_2 / operand_1);
 
 					break;
 				}

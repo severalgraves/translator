@@ -161,8 +161,7 @@ public:
 	bool SyntacticAnalysis()
 	{
 		Stack<char> stack;
-		bool lastWasOperator = false; 
-		bool lastWasOperand = false; 
+		bool lastWasOperator = true;
 
 		for (size_t i = 0; i < str_terms.size(); i++)
 		{
@@ -171,63 +170,39 @@ public:
 			switch (currentTerm->GetType())
 			{
 			case type::open_bracket:
-			{
+				if (!lastWasOperator && !stack.isEmpty()) return false;
 				stack.push(((Bracket*)currentTerm)->get_op());
-				lastWasOperator = true; 
-				lastWasOperand = false; 
+				lastWasOperator = true;
 				break;
-			}
 
 			case type::close_bracket:
-			{
-				if (!stack.isEmpty() && ((Bracket*)currentTerm)->get_op() == Conformity(stack.top()))
-				{
+				if (lastWasOperator) return false;
+				if (!stack.isEmpty() && ((Bracket*)currentTerm)->get_op() == Conformity(stack.top())) {
 					stack.pop();
-					lastWasOperator = false; 
-					lastWasOperand = true;
 				}
-				else
-				{
+				else {
 					return false; 
 				}
+				lastWasOperator = false; 
 				break;
-			}
 
 			case type::operation:
-			{
-				if (lastWasOperator)
-				{
-					return false;
-				}
 
-				lastWasOperator = true;
-				lastWasOperand = false;
+				if (lastWasOperator) return false;
+				lastWasOperator = true; 
 				break;
-			}
 
 			case type::number:
-			{
-				if (lastWasOperand)
-				{
-					return false;
-				}
-
-				lastWasOperand = true;
-				lastWasOperator = false;
+				if (!lastWasOperator && !stack.isEmpty()) return false;
+				lastWasOperator = false; 
 				break;
-			}
 
 			default:
-				break;
+				return false; 
 			}
 		}
 
-		if (lastWasOperator)
-		{
-			return false;
-		}
-
-		return stack.isEmpty();
+		return stack.isEmpty() && !lastWasOperator;
 	}
 
 	double Calculation() {
